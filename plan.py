@@ -17,7 +17,44 @@ def mealPlans(ingredients, meals, factors = [], start = 0, end = 2, step = 1/8, 
     factors_right += [start]
     return mealPlans(ingredients, meals, factors_left, start, end, step, max_kcal, min_kcal, max_cup, min_cup) + mealPlans(ingredients, meals, factors_right, start, end, step, max_kcal, min_kcal, max_cup, min_cup)
   else:
-    if fitsPlan(factors, max_kcal, min_kcal, max_cup, min_cup):
+    if fitsPlan(ingredients, factors, max_kcal, min_kcal, max_cup, min_cup):
       return factors
     else:
       return []
+
+
+def fitsPlan(ingredients, factors, max_kcal, min_kcal, max_cup, min_cup):
+  """
+  Fit recipe.
+  """
+
+  kcal_avgs = {
+    'fruit': 100,
+    'grain': 200,
+    'nuts': 800
+  }
+
+  kcals = 0
+  cups = 0
+  for i in range(len(ingredients)):
+    kcals += kcal_avgs[ingredients[i]['list']] + factors[i]
+    cups += factors[i]
+
+  return min_kcal <= kcals <= max_kcal and min_cup <= cups <= max_cup
+
+
+if __name__ == "__main__":
+  ingredients = [{
+    'title': 'oatmeal',
+    'list': 'grain'
+  }, {
+    'title': 'fruit',
+    'list': 'fruit'
+  }, {
+    'title': 'peanuts',
+    'list': 'nuts'
+  }]
+  meals = 1
+
+  meal_plans = mealPlans(ingredients, meals)
+  print(meal_plans)
